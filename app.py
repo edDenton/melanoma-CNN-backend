@@ -1,19 +1,4 @@
 """
-TODO:
-    Deployment Steps:
-    Make repo with backend: app.py and requirements.txt
-    Go to https://render.com
-    Login with GitHub
-    Click New -> Web Service
-    Select the backend repo
-    Fill in:
-        -Runtime: Python
-        -Start command:
-            gunicorn app:app
-        -Environment: Python 3
-
-    Use given URL in API_URL in script.js
-
     What still needs to be done after this:
         -Find an optimal model (hyperparameters)
         -Save/Load model
@@ -63,7 +48,7 @@ def predict():
     prediction = int(np.argmax(output))
     confidence = float(np.max(output))
 
-    label = "benign" if prediction == 0 else "malignant"
+    label = "Benign" if prediction == 0 else "Malignant"
 
     return jsonify({
         "prediction": label,
