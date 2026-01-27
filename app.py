@@ -10,6 +10,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from PIL import Image
+from model.modified_network import NeuralNetwork
+from model.modified_layers import *
 import numpy as np
 import io
 
@@ -17,10 +19,23 @@ app = Flask(__name__)
 CORS(app)
 
 
-# FAKE MODEL FOR DEMONSTRATION
-def dummy_model_forward(x):
-    # Pretend output: [benign_prob, malignant_prob]
-    return np.array([[0.3], [0.7]])
+LAYERS = [
+        Conv2D(3, 16, 3, stride=1, padding=1),
+        MaxPool2D(2, 2),
+
+        Conv2D(16, 32, 3, stride=1, padding=1),
+        MaxPool2D(2, 2),
+
+        Conv2D(32, 64, 3, stride=1, padding=1),
+        MaxPool2D(2, 2),
+
+        Flatten(),
+        DenseLayer(16384, 128, False),
+        DenseLayer(128, 2, True)
+    ]
+
+model = NeuralNetwork(LAYERS)
+model.load("model/model.npz")
 
 
 @app.route("/predict", methods=["POST"])
@@ -41,9 +56,7 @@ def predict():
     img = np.transpose(img, (2, 0, 1))
     img = img[np.newaxis, ...]
 
-    # CHANGE THIS WHEN ACTUAL MODEL WORKS
-    output = dummy_model_forward(img)
-    # output = model.forward_propagation(img)
+    output = model.forward_propagation(img)
 
     prediction = int(np.argmax(output))
     confidence = float(np.max(output))
