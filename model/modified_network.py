@@ -15,12 +15,15 @@ class NeuralNetwork:
             inputs = layer.forward_propagation(inputs)
         return inputs
 
+    def is_trainable(self, layer):
+        return hasattr(layer, "weights") and hasattr(layer, "biases")
+
     def load(self, filepath: str):
         params = np.load(filepath)
         layer_index = 0
 
         for layer in self.LAYERS:
-            if isinstance(layer, Conv2D) or isinstance(layer, DenseLayer):
+            if self.is_trainable(layer):
                 layer.weights = params[f"layer_{layer_index}_weights"]
                 layer.biases = params[f"layer_{layer_index}_biases"]
             layer_index += 1
