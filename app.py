@@ -1,10 +1,5 @@
 """
-    What still needs to be done after this:
-        -Find an optimal model (hyperparameters)
-        -Save/Load model
-        -Change this file, so we are calling the model and not dummy
-        -Push to backend repo and update Render
-        -Test/END
+
 """
 
 from flask import Flask, request, jsonify
@@ -49,8 +44,6 @@ def predict():
         img = Image.open(io.BytesIO(file.read())).convert("RGB")
     except Exception:
         return jsonify({"error": "Invalid image"}), 400
-
-    img = img.resize((128, 128))
 
     img = np.array(img, dtype=np.float32) / 255.0
     img = np.transpose(img, (2, 0, 1))
